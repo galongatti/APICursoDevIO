@@ -2,7 +2,9 @@
 using DevIO.API.DTO;
 using DevIO.Business.Intefaces;
 using DevIO.Business.Models;
+using DevIO.Business.Notificacoes;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,35 +17,62 @@ namespace DevIO.API.Controllers
    [Route("[controller]")]
    public abstract class MainController : ControllerBase
    {
-     
-   }
 
-   [Route("api/[controller]")]
-   public class FornecedoresController: MainController
-   {
 
-      private readonly IFornecedorRepository _fornecedorRepository;
-      private readonly IMapper _mapper;
+      private readonly INotificador _notificador;
 
-      public FornecedoresController(IFornecedorRepository fornecedor, IMapper mapper)
+      protected MainController(INotificador notificador)
       {
-         _fornecedorRepository = fornecedor;
-         _mapper = mapper;
+         _notificador = notificador;
       }
 
-      [HttpGet]
-      public async Task<ActionResult<List<FornecedorDTO>>> GetFornecedores()
+      protected bool OperacaoValida()
       {
-         try
-         {
-            List<FornecedorDTO> fornecedores = _mapper.Map<List<FornecedorDTO>>(await _fornecedorRepository.ObterTodos());
+         return !_notificador.TemNotificacao();
+      }
 
-            return Ok(fornecedores);
-         }
-         catch (Exception)
+      protected ActionResult CustomResponse(object result = null)
+      {
+         if(OperacaoValida())
          {
-            return BadRequest("Erro ao buscar por fornecedores");            
+            return Ok(new 
+            { 
+               success = true,
+               data = result,
+            });
+         } 
+         else
+         {
+            return BadRequest(new
+            {
+               success = false,
+               errors = _notificador.ObterNotificacoes().Select(x => x.Mensagem)
+            });
          }
       }
+
+      protected ActionResult CustomResponse(ModelStateDictionary modelState)
+      {
+         if(!modelState.IsValid)
+            NotificarErroModelInvalida(modelState);
+         return CustomResponse();
+      }
+
+      protected void NotificarErroModelInvalida(ModelStateDictionary model)
+      {
+         List<ModelError> erros = model.Values.SelectMany(e => e.Errors).ToList();
+         erros.ForEach(e =>
+         {
+            string errorMsg = e.Exception == null ? e.ErrorMessage : e.Exception.Message;
+            NotificarErro(errorMsg);
+         });
+      }
+
+      protected void NotificarErro(string mensagem)
+      {
+         _notificador.Handle(new Notificacao(mensagem));
+      }
+
+
    }
 }

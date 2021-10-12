@@ -36,27 +36,27 @@ namespace DevIO.Data.Repository
             return await DbSet.ToListAsync();
         }
 
-        public virtual async Task Adicionar(TEntity entity)
+        public virtual async Task<bool> Adicionar(TEntity entity)
         {
             DbSet.Add(entity);
-            await SaveChanges();
+            return await SaveChanges();
         }
 
-        public virtual async Task Atualizar(TEntity entity)
+        public virtual async Task<bool> Atualizar(TEntity entity)
         {
             DbSet.Update(entity);
-            await SaveChanges();
+            return await SaveChanges();
         }
 
-        public virtual async Task Remover(Guid id)
+        public virtual async Task<bool> Remover(Guid id)
         {
             DbSet.Remove(new TEntity { Id = id });
-            await SaveChanges();
+            return await SaveChanges();
         }
 
-        public async Task<int> SaveChanges()
+        public async Task<bool> SaveChanges()
         {
-            return await Db.SaveChangesAsync();
+            return await Db.SaveChangesAsync() > 0;
         }
 
         public void Dispose()

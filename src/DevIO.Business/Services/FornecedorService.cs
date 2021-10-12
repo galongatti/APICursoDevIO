@@ -31,8 +31,7 @@ namespace DevIO.Business.Services
                 return false;
             }
 
-            await _fornecedorRepository.Adicionar(fornecedor);
-            return true;
+            return await _fornecedorRepository.Adicionar(fornecedor);            
         }
 
         public async Task<bool> Atualizar(Fornecedor fornecedor)
@@ -45,8 +44,7 @@ namespace DevIO.Business.Services
                 return false;
             }
 
-            await _fornecedorRepository.Atualizar(fornecedor);
-            return true;
+            return await _fornecedorRepository.Atualizar(fornecedor);
         }
 
         public async Task AtualizarEndereco(Endereco endereco)
@@ -71,8 +69,7 @@ namespace DevIO.Business.Services
                 await _enderecoRepository.Remover(endereco.Id);
             }
 
-            await _fornecedorRepository.Remover(id);
-            return true;
+            return await _fornecedorRepository.Remover(id);
         }
 
         public void Dispose()

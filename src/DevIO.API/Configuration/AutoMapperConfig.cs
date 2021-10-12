@@ -15,7 +15,9 @@ namespace DevIO.API.Extensions
       {
          CreateMap<Fornecedor, FornecedorDTO>().ReverseMap();
          CreateMap<Endereco, EnderecoDTO>().ReverseMap();
-         CreateMap<Produto, ProdutoDTO>().ReverseMap();
+         CreateMap<ProdutoDTO, Produto>().ReverseMap();
+         CreateMap<Produto, ProdutoDTO>().ForMember(dest => dest.NomeFornecedor, opt => opt.MapFrom(src => src.Fornecedor.Nome));
+
       }
    }
 }

@@ -32,12 +32,15 @@ namespace DevIO.API
 
          services.AddDbContext<MeuDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-         services.AddAutoMapper(typeof(Startup));
-         services.AddControllers();
          services.AddSwaggerGen(c =>
          {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "DevIO.API", Version = "v1" });
          });
+
+         services.WebApiConfig();
+
+         services.AddAutoMapper(typeof(Startup));       
+
          services.ResolveDependencies();
       }
 
@@ -51,16 +54,8 @@ namespace DevIO.API
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DevIO.API v1"));
          }
 
-         app.UseHttpsRedirection();
-
-         app.UseRouting();
-
-         app.UseAuthorization();
-
-         app.UseEndpoints(endpoints =>
-         {
-            endpoints.MapControllers();
-         });
+         app.UseApiConfiguration();
+         
       }
    }
 }
