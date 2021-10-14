@@ -32,6 +32,8 @@ namespace DevIO.API
 
          services.AddDbContext<MeuDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+         services.AddIdentityConfiguration(Configuration);
+
          services.AddSwaggerGen(c =>
          {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "DevIO.API", Version = "v1" });
@@ -54,6 +56,8 @@ namespace DevIO.API
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DevIO.API v1"));
          }
 
+
+         app.UseAuthentication();
          app.UseApiConfiguration();
          
       }
