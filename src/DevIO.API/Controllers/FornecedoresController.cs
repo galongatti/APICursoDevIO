@@ -2,14 +2,17 @@
 using DevIO.API.DTO;
 using DevIO.Business.Intefaces;
 using DevIO.Business.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static DevIO.API.Extensions.CustomAuthorize;
 
 namespace DevIO.API.Controllers
 {
+   [Authorize]
    [Route("api/[controller]")]
    public class FornecedoresController : MainController
    {
@@ -27,6 +30,7 @@ namespace DevIO.API.Controllers
          _enderecoRepository = enderecoRepository;
       }
 
+      [ClaimsAuthorize("Fornecedor", "Consultar")]
       [HttpGet]
       public async Task<ActionResult<List<FornecedorDTO>>> GetFornecedores()
       {
@@ -42,6 +46,7 @@ namespace DevIO.API.Controllers
          }
       }
 
+      [ClaimsAuthorize("Fornecedor", "Consultar")]
       [HttpGet("{id:guid}")]
       public async Task<ActionResult<FornecedorDTO>> ObterPorID(Guid id)
       {
@@ -68,6 +73,7 @@ namespace DevIO.API.Controllers
          }
       }
 
+      [ClaimsAuthorize("Fornecedor","Cadastrar")]
       [HttpPost]
       public async Task<ActionResult<FornecedorDTO>> CadastrarUsuario(FornecedorDTO fornecedorDTO)
       {
@@ -79,6 +85,8 @@ namespace DevIO.API.Controllers
             return CustomResponse(fornecedorDTO);
       }
 
+  
+      [ClaimsAuthorize("Fornecedor", "Atualizar")]
       [HttpPut]
       public async Task<ActionResult<FornecedorDTO>> AtualizarUsuario(Guid id, FornecedorDTO fornecedorDTO)
       {
@@ -97,6 +105,7 @@ namespace DevIO.API.Controllers
          return CustomResponse(fornecedorDTO);
       }
 
+      [ClaimsAuthorize("Fornecedor", "Excluir")]
       [HttpDelete]
       public async Task<ActionResult<FornecedorDTO>> ExcluirUsuario(Guid id)
       {
@@ -111,6 +120,7 @@ namespace DevIO.API.Controllers
          
       }
 
+      [ClaimsAuthorize("Fornecedor", "Consultar")]
       [HttpGet("obter-endereco/{id:guid}")]
       public async Task<ActionResult<EnderecoDTO>> ObterEnderecoPorId(Guid id)
       {
@@ -123,6 +133,7 @@ namespace DevIO.API.Controllers
          return _mapper.Map<EnderecoDTO>(await _enderecoRepository.ObterEnderecoPorFornecedor(id));
       }
 
+      [ClaimsAuthorize("Fornecedor", "Atualizar")]
       [HttpPut("atualizar-endereco/{id:guid}")]
       public async Task<ActionResult<EnderecoDTO>> AtualizarEndereco(Guid id, EnderecoDTO enderecoDTO)
       {
