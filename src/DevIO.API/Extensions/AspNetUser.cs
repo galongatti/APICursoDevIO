@@ -18,27 +18,27 @@ namespace DevIO.API.Extensions
 
       public IEnumerable<Claim> GetClaimsIdentity()
       {
-         throw new NotImplementedException();
+         return _accessor.HttpContext.User.Claims;
       }
 
       public string GetUserEmail()
       {
-         throw new NotImplementedException();
+         return IsAuthenticated() ? _accessor.HttpContext.User.GetUserEmail() : "";
       }
 
       public Guid GetUserId()
       {
-         return IsAuthenticated() ? Guid.Parse(_accessor.HttpContext.User.GetUserId()) : Guid.NewGuid();
+         return IsAuthenticated() ? Guid.Parse(_accessor.HttpContext.User.GetUserId()) : Guid.Empty;
       }
 
       public bool IsAuthenticated()
       {
-         throw new NotImplementedException();
+         return _accessor.HttpContext.User.Identity.IsAuthenticated;
       }
 
       public bool IsInRole(string role)
       {
-         throw new NotImplementedException();
+         return _accessor.HttpContext.User.IsInRole(role);
       }
    }
 

@@ -14,16 +14,43 @@ namespace DevIO.API.Configuration
       public static IServiceCollection WebApiConfig(this IServiceCollection services)
       {
          services.AddControllers();
+
+         services.AddApiVersioning(opt =>
+         {
+            opt.AssumeDefaultVersionWhenUnspecified = true;
+            opt.DefaultApiVersion = new ApiVersion(1, 0);
+            opt.ReportApiVersions = true;
+         });
+
+         services.AddVersionedApiExplorer(opt =>
+         {
+            opt.GroupNameFormat = "'v'VVV";
+            opt.SubstituteApiVersionInUrl = true;
+         });
+
+
          services.Configure<ApiBehaviorOptions>(opt => {
             opt.SuppressModelStateInvalidFilter = true;
          });
 
          services.AddCors(options =>
          {
+            //options.AddDefaultPolicy(builder =>
+            //   builder.AllowAnyOrigin()
+            //   .AllowAnyMethod()
+            //   .AllowAnyHeader());
+
             options.AddPolicy("Development", builder =>
             builder.AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
+
+            options.AddPolicy("Production", builder =>
+            builder
+               .WithMethods("GET", "POST")
+               .WithOrigins("Http://desenvolvedor.io")
+               .SetIsOriginAllowedToAllowWildcardSubdomains()
+               .AllowAnyHeader());
          });
 
          return services;
@@ -31,15 +58,11 @@ namespace DevIO.API.Configuration
 
       public static IApplicationBuilder UseApiConfiguration(this IApplicationBuilder app)
       {
-
-
          app.UseHttpsRedirection();
 
          app.UseRouting();
 
-         app.UseAuthorization();
-
-         app.UseCors("Development");
+         app.UseAuthorization();        
 
          app.UseEndpoints(endpoints =>
          {

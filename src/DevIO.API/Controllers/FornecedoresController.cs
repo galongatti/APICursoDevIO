@@ -13,7 +13,9 @@ using static DevIO.API.Extensions.CustomAuthorize;
 namespace DevIO.API.Controllers
 {
    [Authorize]
-   [Route("api/[controller]")]
+   [ApiVersion("2.0")]
+   [ApiVersion("1.0", Deprecated = true)]
+   [Route("api/v{version:apiVersion}/[controller]")]
    public class FornecedoresController : MainController
    {
 
@@ -22,7 +24,7 @@ namespace DevIO.API.Controllers
       private readonly IMapper _mapper;
       private readonly IEnderecoRepository _enderecoRepository;
 
-      public FornecedoresController(IFornecedorRepository fornecedor, IFornecedorService fornecedorService, IMapper mapper, INotificador notificador, IEnderecoRepository enderecoRepository) : base(notificador)
+      public FornecedoresController(IFornecedorRepository fornecedor, IFornecedorService fornecedorService, IMapper mapper, INotificador notificador, IEnderecoRepository enderecoRepository, IUser user) : base(notificador, user)
       {
          _fornecedorRepository = fornecedor;
          _mapper = mapper;
