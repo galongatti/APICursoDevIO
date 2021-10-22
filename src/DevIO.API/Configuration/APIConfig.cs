@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -35,22 +37,22 @@ namespace DevIO.API.Configuration
 
          services.AddCors(options =>
          {
-            //options.AddDefaultPolicy(builder =>
-            //   builder.AllowAnyOrigin()
-            //   .AllowAnyMethod()
-            //   .AllowAnyHeader());
-
-            options.AddPolicy("Development", builder =>
-            builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
-
-            options.AddPolicy("Production", builder =>
-            builder
-               .WithMethods("GET", "POST")
-               .WithOrigins("Http://desenvolvedor.io")
-               .SetIsOriginAllowedToAllowWildcardSubdomains()
+            options.AddDefaultPolicy(builder =>
+               builder.AllowAnyOrigin()
+               .AllowAnyMethod()
                .AllowAnyHeader());
+
+            //options.AddPolicy("Development", builder =>
+            //builder.AllowAnyOrigin()
+            //.AllowAnyMethod()
+            //.AllowAnyHeader());
+
+            //options.AddPolicy("Production", builder =>
+            //builder
+            //   .WithMethods("GET", "POST")
+            //   .WithOrigins("Http://desenvolvedor.io")
+            //   .SetIsOriginAllowedToAllowWildcardSubdomains()
+            //   .AllowAnyHeader());
          });
 
          return services;
@@ -58,7 +60,7 @@ namespace DevIO.API.Configuration
 
       public static IApplicationBuilder UseApiConfiguration(this IApplicationBuilder app)
       {
-         app.UseHttpsRedirection();
+         app.UseHttpsRedirection();         
 
          app.UseRouting();
 
@@ -66,7 +68,7 @@ namespace DevIO.API.Configuration
 
          app.UseEndpoints(endpoints =>
          {
-            endpoints.MapControllers();
+            endpoints.MapControllers();                    
          });
 
          return app;
